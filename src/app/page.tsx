@@ -2,8 +2,9 @@ import { Button } from '@/components/ui/button'
 
 export default function Home() {
   return (
-    <div>
+    <main>
+      <h1 className='text-3xl font-semibold'>Home</h1>
       <Button>Click me</Button>
-    </div>
+    </main>
   )
 }
