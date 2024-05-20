@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
-import './globals.css'
+
 import { Header } from '@/components/shared/header'
+import { ThemeProvider } from '@/components/provider/theme-provider'
+import '@/app/globals.css'
 
 const nunito = localFont({
   src: [
@@ -141,10 +143,12 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${arimo.className} ${arimo.variable} ${nunito.variable} ${kanit.variable}`}>
-        <Header />
-        {children}
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <Header />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   )
