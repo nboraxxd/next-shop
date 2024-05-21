@@ -1,14 +1,9 @@
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
 
 import { VercelLogoIcon } from '@radix-ui/react-icons'
 import { Button } from '@/components/ui/button'
 
-const isAuth = true
-
 export default async function HomePage() {
-  if (!isAuth) redirect('/login')
-
   return (
     <>
       <h1 className="flex items-center gap-2 text-2xl font-semibold">
