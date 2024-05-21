@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 
-import { Header } from '@/components/shared/header'
 import { ThemeProvider } from '@/components/provider/theme-provider'
+import { Header } from '@/components/shared/header'
+import { Toaster } from '@/components/ui/sonner'
 import '@/app/globals.css'
 
 const nunito = localFont({
@@ -148,6 +149,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Header />
           {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

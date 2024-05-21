@@ -11,7 +11,7 @@ export default function RegisterPage() {
       <div className="mt-5 flex w-full max-w-96 flex-col">
         <RegisterForm />
 
-        <div className="mt-4 flex items-center justify-center gap-1">
+        <div className="mt-5 flex items-center justify-center gap-1">
           <span>Already have an account?</span>
           <Link href="/login" className="text-blue-600 hover:underline">
             Login

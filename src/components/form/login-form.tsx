@@ -2,39 +2,37 @@
 
 import { toast } from 'sonner'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
+import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LoaderCircle } from 'lucide-react'
 
 import envConfig from '@/constants/config'
 import { ServiceStatus } from '@/constants/enum'
-import { RegisterSchema, RegisterSchemaType } from '@/lib/schemaValidations/auth.schema'
+import { LoginSchemaType, LoginSchema } from '@/lib/schemaValidations/auth.schema'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 
-export default function RegisterForm() {
+export default function LoginForm() {
   const [status, setStatus] = useState<ServiceStatus>(ServiceStatus.idle)
   const router = useRouter()
 
-  const form = useForm<RegisterSchemaType>({
-    resolver: zodResolver(RegisterSchema),
+  const form = useForm<LoginSchemaType>({
+    resolver: zodResolver(LoginSchema),
     defaultValues: {
-      name: '',
       email: '',
       password: '',
-      confirmPassword: '',
     },
   })
 
-  async function onValid(values: RegisterSchemaType) {
+  async function onValid(values: LoginSchemaType) {
     if (status === ServiceStatus.pending) return
 
     setStatus(ServiceStatus.pending)
 
     try {
-      const result = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT}/auth/register`, {
+      const result = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -61,7 +59,7 @@ export default function RegisterForm() {
         const errors = error.payload?.errors as { field: string; message: string }[]
 
         errors.forEach(({ field, message }) => {
-          form.setError(field as keyof RegisterSchemaType, { message })
+          form.setError(field as keyof LoginSchemaType, { type: 'server', message })
         })
       } else {
         toast.error(error.payload?.message || error.toString())
@@ -74,21 +72,6 @@ export default function RegisterForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onValid)} noValidate className="flex w-full flex-col gap-3.5">
-        {/* Name */}
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem className="space-y-1.5">
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input type="text" placeholder="Bruce Wayne" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
         {/* Email */}
         <FormField
           control={form.control}
@@ -124,30 +107,10 @@ export default function RegisterForm() {
           )}
         />
 
-        {/* Confirm password */}
-        <FormField
-          control={form.control}
-          name="confirmPassword"
-          render={({ field }) => (
-            <FormItem className="space-y-1.5">
-              <FormLabel>Cofirm password</FormLabel>
-              <FormControl>
-                <Input
-                  type="password"
-                  autoComplete="new-password"
-                  placeholder="Please confirm your password"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
         {/* Button */}
         <Button type="submit" disabled={status === ServiceStatus.pending} className="mt-2 gap-2">
           {status === ServiceStatus.pending ? <LoaderCircle className="ml-2 animate-spin" /> : null}
-          Register
+          Login
         </Button>
       </form>
     </Form>
