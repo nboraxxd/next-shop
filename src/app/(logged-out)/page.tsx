@@ -24,6 +24,15 @@ export default async function HomePage() {
 
       <div className="flex items-center gap-2">
         <Button asChild>
+          <Link href="/me">Me (server)</Link>
+        </Button>
+        <Button asChild>
+          <Link href="/profile">Profile (client)</Link>
+        </Button>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <Button asChild>
           <Link href="/products">Products</Link>
         </Button>
         <Button asChild>

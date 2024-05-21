@@ -5,7 +5,6 @@ import envConfig from '@/constants/config'
 export default async function MePage() {
   const cookieStore = cookies()
   const sessionToken = cookieStore.get('sessionToken')
-  console.log('🔥 ~ MePage ~ sessionToken:', sessionToken)
 
   const result = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT}/account/me`, {
     headers: {
@@ -21,7 +20,6 @@ export default async function MePage() {
 
     return data
   })
-  console.log('🔥 ~ MePage ~ result:', result)
 
   return <div>Hello {result.payload?.data?.name}</div>
 }

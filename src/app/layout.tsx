@@ -1,7 +1,9 @@
-import type { Metadata } from 'next'
 import localFont from 'next/font/local'
+import type { Metadata } from 'next'
+import { cookies } from 'next/headers'
 
 import { ThemeProvider } from '@/components/provider/theme-provider'
+import AuthProvider from '@/components/provider/auth-provider'
 import { Header } from '@/components/shared/header'
 import { Toaster } from '@/components/ui/sonner'
 import '@/app/globals.css'
@@ -143,13 +145,18 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const cookieStore = cookies()
+  const sessionToken = cookieStore.get('sessionToken')
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${arimo.className} ${arimo.variable} ${nunito.variable} ${kanit.variable}`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Header />
-          {children}
-          <Toaster />
+          <AuthProvider initialSessionToken={sessionToken?.value}>
+            <Header />
+            {children}
+            <Toaster />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
