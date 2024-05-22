@@ -1,6 +1,5 @@
 'use client'
 
-import { toast } from 'sonner'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
@@ -9,6 +8,7 @@ import { LoaderCircle } from 'lucide-react'
 
 import authApi from '@/api/auth.api'
 import { ServiceStatus } from '@/constants/enum'
+import { handleErrorApi } from '@/utils/error'
 import { LoginSchemaType, LoginSchema } from '@/lib/schemaValidations/auth.schema'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
@@ -45,19 +45,8 @@ export default function LoginForm() {
       form.reset()
       router.push('/')
       router.refresh()
-    } catch (error: any) {
-      const status = error.status
-
-      if (status === 422) {
-        const errors = error.payload?.errors as { field: string; message: string }[]
-
-        errors.forEach(({ field, message }) => {
-          form.setError(field as keyof LoginSchemaType, { type: 'server', message })
-        })
-      } else {
-        toast.error(error.payload?.message || error.toString())
-      }
-
+    } catch (error) {
+      handleErrorApi({ error, setError: form.setError })
       setStatus(ServiceStatus.rejected)
     }
   }

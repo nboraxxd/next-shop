@@ -2,6 +2,7 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
 import accountApi from '@/api/account.api'
+import { handleErrorApi } from '@/utils/error'
 
 export default async function MePage() {
   const cookieStore = cookies()
@@ -9,7 +10,12 @@ export default async function MePage() {
 
   if (!sessionToken) redirect('/login')
 
-  const result = await accountApi.getMe(sessionToken)
+  let result
+  try {
+    result = await accountApi.getMe('sessionToken')
+  } catch (error) {
+    handleErrorApi({ error })
+  }
 
-  return <div>Hello {result.payload.data.name}</div>
+  return <div>Hello {result?.payload.data.name}</div>
 }
