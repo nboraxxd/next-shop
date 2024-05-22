@@ -15,7 +15,7 @@ export function middleware(request: NextRequest) {
   }
 
   if (loggedInPaths.some((loggedInPath) => pathname.startsWith(loggedInPath) && sessionToken)) {
-    return NextResponse.redirect(new URL('/me', request.url))
+    return NextResponse.redirect(new URL('/', request.url))
   }
 
   return NextResponse.next()

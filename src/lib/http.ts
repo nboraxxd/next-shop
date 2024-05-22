@@ -1,4 +1,5 @@
 import envConfig from '@/constants/config'
+import { AuthResponse } from '@/types/auth.type'
 
 type CustomOptions = RequestInit & { baseUrl?: string }
 
@@ -12,11 +13,30 @@ class HttpError extends Error {
   }
 }
 
+class SessionToken {
+  private token = ''
+
+  get value() {
+    return this.token
+  }
+
+  set value(token: string) {
+    if (typeof window === 'undefined') {
+      throw new Error('Cannot set token on server side')
+    }
+
+    this.token = token
+  }
+}
+
+export const clientSessionToken = new SessionToken()
+
 const request = async <Response>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', url: string, options?: CustomOptions) => {
   const body = options?.body ? JSON.stringify(options.body) : undefined
 
-  const baseHeaders = {
+  const baseHeaders: HeadersInit = {
     'Content-Type': 'application/json',
+    Authorization: clientSessionToken.value ? `Bearer ${clientSessionToken.value}` : '',
   }
 
   const baseUrl = options?.baseUrl || envConfig.API_ENDPOINT
@@ -42,6 +62,12 @@ const request = async <Response>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', url:
 
   if (!res.ok) {
     throw new HttpError(data)
+  }
+
+  if (['/auth/login', '/auth/register'].includes(url)) {
+    clientSessionToken.value = (payload as AuthResponse).data.token
+  } else if (url === '/auth/logout') {
+    clientSessionToken.value = ''
   }
 
   return data
