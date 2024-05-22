@@ -1,25 +1,15 @@
 import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 
-import envConfig from '@/constants/config'
+import accountApi from '@/api/account.api'
 
 export default async function MePage() {
   const cookieStore = cookies()
   const sessionToken = cookieStore.get('sessionToken')?.value
 
-  const result = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT}/account/me`, {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${sessionToken}`,
-    },
-  }).then(async (res) => {
-    const payload = await res.json()
+  if (!sessionToken) redirect('/login')
 
-    const data = { status: res.status, payload }
+  const result = await accountApi.getMe(sessionToken)
 
-    if (!res.ok) throw data
-
-    return data
-  })
-
-  return <div>Hello {result.payload?.data?.name}</div>
+  return <div>Hello {result.payload.data.name}</div>
 }

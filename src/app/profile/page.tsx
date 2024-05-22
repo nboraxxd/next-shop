@@ -2,42 +2,24 @@
 
 import { useEffect, useState } from 'react'
 
+import accountApi from '@/api/account.api'
+import { GetMeResponse } from '@/types/account.type'
 import { useAuthStore } from '@/lib/stores/auth-store'
-import envConfig from '@/constants/config'
 
 export default function ProfilePage() {
-  const [profile, setProfile] = useState<{
-    status: number
-    payload: any
-  } | null>(null)
+  const [profile, setProfile] = useState<GetMeResponse['data'] | null>(null)
 
   const sessionToken = useAuthStore((state) => state.sessionToken)
 
   useEffect(() => {
     if (sessionToken) {
       ;(async () => {
-        const result = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT}/account/me`, {
-          headers: {
-            Authorization: `Bearer ${sessionToken}`,
-          },
-        }).then(async (res) => {
-          const payload = await res.json()
-          const data = {
-            status: res.status,
-            payload,
-          }
+        const result = await accountApi.getMe(sessionToken)
 
-          if (!res.ok) {
-            throw data
-          }
-
-          return data
-        })
-
-        setProfile(result)
+        setProfile(result.payload.data)
       })()
     }
   }, [sessionToken])
 
-  return <div>{profile?.payload.data.name}</div>
+  return <div>{profile?.name}</div>
 }

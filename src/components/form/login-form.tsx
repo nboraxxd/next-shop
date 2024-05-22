@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LoaderCircle } from 'lucide-react'
 
-import envConfig from '@/constants/config'
+import authApi from '@/api/auth.api'
 import { ServiceStatus } from '@/constants/enum'
 import { LoginSchemaType, LoginSchema } from '@/lib/schemaValidations/auth.schema'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
@@ -32,37 +32,13 @@ export default function LoginForm() {
     setStatus(ServiceStatus.pending)
 
     try {
-      const result = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const {
+        payload: {
+          data: { token: sessionToken, expiresAt },
         },
-        body: JSON.stringify(values),
-      }).then(async (res) => {
-        const payload = await res.json()
+      } = await authApi.login(values)
 
-        const data = { status: res.status, payload }
-
-        if (!res.ok) throw data
-
-        return data
-      })
-
-      await fetch('/api/auth', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(result.payload),
-      }).then(async (res) => {
-        const payload = await res.json()
-
-        const data = { status: res.status, payload }
-
-        if (!res.ok) throw data
-
-        return data
-      })
+      await authApi.authNextServer({ sessionToken, expiresAt })
 
       setStatus(ServiceStatus.successful)
 
