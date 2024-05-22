@@ -47,27 +47,28 @@ export default function LoginForm() {
 
         return data
       })
-      setStatus(ServiceStatus.successful)
 
-      const resultFromNextServer = await fetch('/api/auth', {
+      await fetch('/api/auth', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(result),
+        body: JSON.stringify(result.payload),
       }).then(async (res) => {
         const payload = await res.json()
 
-        const data = { status: res.status, payload: payload.res.payload }
+        const data = { status: res.status, payload }
 
         if (!res.ok) throw data
 
         return data
       })
-      console.log('🔥 ~ onValid ~ resultFromNextServer:', resultFromNextServer)
+
+      setStatus(ServiceStatus.successful)
 
       form.reset()
       router.push('/')
+      router.refresh()
     } catch (error: any) {
       const status = error.status
 

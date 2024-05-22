@@ -49,11 +49,28 @@ export default function RegisterForm() {
 
         return data
       })
+
+      await fetch('/api/auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(result.payload),
+      }).then(async (res) => {
+        const payload = await res.json()
+
+        const data = { status: res.status, payload }
+
+        if (!res.ok) throw data
+
+        return data
+      })
+
       setStatus(ServiceStatus.successful)
 
-      console.log('🔥 ~ onValid ~ result:', result)
       form.reset()
       router.push('/')
+      router.refresh()
     } catch (error: any) {
       const status = error.status
 

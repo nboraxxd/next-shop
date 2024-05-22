@@ -4,12 +4,12 @@ import envConfig from '@/constants/config'
 
 export default async function MePage() {
   const cookieStore = cookies()
-  const sessionToken = cookieStore.get('sessionToken')
+  const sessionToken = cookieStore.get('sessionToken')?.value
 
   const result = await fetch(`${envConfig.NEXT_PUBLIC_API_ENDPOINT}/account/me`, {
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${sessionToken?.value}`,
+      Authorization: `Bearer ${sessionToken}`,
     },
   }).then(async (res) => {
     const payload = await res.json()
