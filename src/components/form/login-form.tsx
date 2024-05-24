@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LoaderCircle } from 'lucide-react'
 
-import authApi from '@/api/auth.api'
+import authApi from '@/api-requests/auth.api'
 import { ServiceStatus } from '@/constants/enum'
 import { handleErrorApi } from '@/utils/error'
 import { LoginSchemaType, LoginSchema } from '@/lib/schemaValidations/auth.schema'

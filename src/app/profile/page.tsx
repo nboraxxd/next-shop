@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-import accountApi from '@/api/account.api'
+import accountApi from '@/api-requests/account.api'
 import { GetMeResponse } from '@/types/account.type'
 import { handleErrorApi } from '@/utils/error'
 

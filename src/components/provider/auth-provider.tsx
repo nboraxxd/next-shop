@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 
+import { isClient } from '@/utils'
 import { clientSessionToken } from '@/lib/http'
 
 interface Props {
@@ -11,7 +12,7 @@ interface Props {
 
 export default function AuthProvider({ children, initialSessionToken = '' }: Props) {
   useState(() => {
-    if (typeof window !== 'undefined') {
+    if (isClient) {
       clientSessionToken.value = initialSessionToken
     }
   })

@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
-import accountApi from '@/api/account.api'
+import accountApi from '@/api-requests/account.api'
 import { handleErrorApi } from '@/utils/error'
 
 export default async function MePage() {

@@ -1,5 +1,6 @@
 import envConfig from '@/constants/config'
 import { AuthResponse } from '@/types/auth.type'
+import { isClient, addFirstSlashToUrl } from '@/utils'
 
 type CustomOptions = Omit<RequestInit, 'method'> & { baseUrl?: string }
 
@@ -47,7 +48,7 @@ class SessionToken {
   }
 
   set value(token: string) {
-    if (typeof window === 'undefined') {
+    if (!isClient) {
       throw new Error('Cannot set token on server side')
     }
 
@@ -94,9 +95,9 @@ const request = async <Response>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', url:
     }
   }
 
-  if (['/auth/login', '/auth/register'].includes(url)) {
+  if (isClient && ['/auth/login', '/auth/register'].some((path) => path === addFirstSlashToUrl(url))) {
     clientSessionToken.value = (payload as AuthResponse).data.token
-  } else if (url === '/auth/logout') {
+  } else if (isClient && addFirstSlashToUrl(url) === '/auth/logout') {
     clientSessionToken.value = ''
   }
 
