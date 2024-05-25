@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LoaderCircle } from 'lucide-react'
 
@@ -16,7 +16,11 @@ import { Button } from '@/components/ui/button'
 
 export default function RegisterForm() {
   const [status, setStatus] = useState<ServiceStatus>(ServiceStatus.idle)
+
   const router = useRouter()
+
+  const searchParams = useSearchParams()
+  const from = searchParams.get('from')
 
   const form = useForm<RegisterSchemaType>({
     resolver: zodResolver(RegisterSchema),
@@ -42,11 +46,11 @@ export default function RegisterForm() {
 
       await authApi.authNextServer({ expiresAt, sessionToken })
 
-      setStatus(ServiceStatus.successful)
+      router.push(from ? `${from}?is_from_register=true` : '/me')
+      router.refresh()
 
       form.reset()
-      router.push('/')
-      router.refresh()
+      setStatus(ServiceStatus.successful)
     } catch (error) {
       handleErrorApi({ error, setError: form.setError })
       setStatus(ServiceStatus.rejected)

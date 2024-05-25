@@ -11,7 +11,10 @@ export function middleware(request: NextRequest) {
   const sessionToken = request.cookies.get('sessionToken')?.value
 
   if (privatePaths.some((privatePath) => pathname.startsWith(privatePath) && !sessionToken)) {
-    return NextResponse.redirect(new URL('/login', request.url))
+    const loginUrl = new URL('/login', request.url)
+    loginUrl.searchParams.set('from', pathname)
+
+    return NextResponse.redirect(loginUrl)
   }
 
   if (loggedInPaths.some((loggedInPath) => pathname.startsWith(loggedInPath) && sessionToken)) {

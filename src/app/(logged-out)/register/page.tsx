@@ -1,8 +1,9 @@
 import Link from 'next/link'
 
+import { SearchParamsProps } from '@/types/common.type'
 import RegisterForm from '@/components/form/register-form'
 
-export default function RegisterPage() {
+export default function RegisterPage({ searchParams }: SearchParamsProps) {
   return (
     <>
       <h1 className="flex items-center gap-2 text-2xl font-semibold">Register with Next free</h1>
@@ -13,7 +14,13 @@ export default function RegisterPage() {
 
         <div className="mt-5 flex items-center justify-center gap-1">
           <span>Already have an account?</span>
-          <Link href="/login" className="text-blue-600 hover:underline">
+          <Link
+            href={{
+              pathname: '/login',
+              query: searchParams,
+            }}
+            className="text-blue-600 hover:underline"
+          >
             Login
           </Link>
         </div>

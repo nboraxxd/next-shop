@@ -12,7 +12,7 @@ export default async function MePage() {
 
   let result
   try {
-    result = await accountApi.getMe('sessionToken')
+    result = await accountApi.getMe(sessionToken)
   } catch (error) {
     handleErrorApi({ error })
   }
