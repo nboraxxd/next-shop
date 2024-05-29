@@ -5,7 +5,7 @@ const accountApi = {
   getMe: (sessionToken: string) =>
     http.get<GetMeResponse>('/account/me', { headers: { Authorization: `Bearer ${sessionToken}` } }),
 
-  getMeClient: () => http.get<GetMeResponse>('/account/me'),
+  getMeClient: (signal?: AbortSignal) => http.get<GetMeResponse>('/account/me', { signal }),
 }
 
 export default accountApi

@@ -10,16 +10,23 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<GetMeResponse['data'] | null>(null)
 
   useEffect(() => {
+    const controller = new AbortController()
+    const signal = controller.signal
+
     ;(async () => {
       try {
-        const result = await accountApi.getMeClient()
+        const result = await accountApi.getMeClient(signal)
 
         setProfile(result.payload.data)
       } catch (error) {
         handleErrorApi({ error })
       }
     })()
+
+    return () => {
+      controller.abort()
+    }
   }, [])
 
-  return <div>{profile?.name}</div>
+  return <div>Hello {profile?.name} (client)</div>
 }

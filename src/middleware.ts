@@ -12,7 +12,7 @@ export function middleware(request: NextRequest) {
 
   if (privatePaths.some((privatePath) => pathname.startsWith(privatePath) && !sessionToken)) {
     const loginUrl = new URL('/login', request.url)
-    loginUrl.searchParams.set('from', pathname)
+    loginUrl.searchParams.set('next', pathname)
 
     return NextResponse.redirect(loginUrl)
   }

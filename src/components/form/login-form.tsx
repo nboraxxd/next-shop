@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
+import queryString from 'query-string'
 import { useForm } from 'react-hook-form'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LoaderCircle } from 'lucide-react'
 
@@ -10,17 +11,20 @@ import authApi from '@/api-requests/auth.api'
 import { ServiceStatus } from '@/constants/enum'
 import { handleErrorApi } from '@/utils/error'
 import { LoginSchemaType, LoginSchema } from '@/lib/schemaValidations/auth.schema'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 
 export default function LoginForm() {
   const [status, setStatus] = useState<ServiceStatus>(ServiceStatus.idle)
 
   const router = useRouter()
 
+  const pathname = usePathname()
+  const from = queryString.stringify({ from: pathname })
+
   const searchParams = useSearchParams()
-  const from = searchParams.get('from')
+  const next = searchParams.get('next')
 
   const form = useForm<LoginSchemaType>({
     resolver: zodResolver(LoginSchema),
@@ -44,10 +48,9 @@ export default function LoginForm() {
 
       await authApi.authNextServer({ sessionToken, expiresAt })
 
-      router.push(from ? `${from}?is_from_login=true` : '/me')
+      router.push(next ? `${next}?${from}` : '/me')
       router.refresh()
 
-      form.reset()
       setStatus(ServiceStatus.successful)
     } catch (error) {
       handleErrorApi({ error, setError: form.setError })

@@ -4,7 +4,6 @@ import LoginForm from '@/components/form/login-form'
 import { SearchParamsProps } from '@/types/common.type'
 
 export default function LoginPage({ searchParams }: SearchParamsProps) {
-  console.log('🔥 ~ LoginPage ~ searchParams:', searchParams)
   return (
     <>
       <h1 className="flex items-center gap-2 text-2xl font-semibold">Login to Next free</h1>

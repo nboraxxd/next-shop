@@ -1,12 +1,17 @@
 import envConfig from '@/constants/config'
 import { AuthResponse } from '@/types/auth.type'
 import { isClient, addFirstSlashToUrl } from '@/utils'
+import { redirect } from 'next/navigation'
 
-type CustomOptions = Omit<RequestInit, 'method'> & { baseUrl?: string }
+type CustomOptions = Omit<RequestInit, 'method'> & {
+  baseUrl?: string
+  headers?: HeadersInit & { Authorization?: string }
+}
 
 type CustomOptionsExcluedBody = Omit<CustomOptions, 'body'>
 
 const ENTITY_ERROR_STATUS = 422
+const AUTHENTICATION_ERROR_STATUS = 401
 
 type EntityErrorPayload = {
   message: string
@@ -57,6 +62,7 @@ class SessionToken {
 }
 
 export const clientSessionToken = new SessionToken()
+let clientLogoutRequest: Promise<any> | null = null
 
 const request = async <Response>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', url: string, options?: CustomOptions) => {
   const body = options?.body ? JSON.stringify(options.body) : undefined
@@ -90,6 +96,26 @@ const request = async <Response>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', url:
   if (!res.ok) {
     if (res.status === ENTITY_ERROR_STATUS) {
       throw new EntityError(data.payload as EntityErrorPayload)
+    } else if (res.status === AUTHENTICATION_ERROR_STATUS) {
+      if (isClient && !clientLogoutRequest) {
+        clientLogoutRequest = fetch('/api/auth/logout', {
+          method: 'POST',
+          body: JSON.stringify({ force: true }),
+          headers: { ...baseHeaders },
+        })
+
+        await clientLogoutRequest
+
+        clientLogoutRequest = null
+        clientSessionToken.value = ''
+        window.location.href = '/login'
+      }
+
+      if (!isClient) {
+        const sessionToken = options?.headers?.Authorization?.split('Bearer ')[1]
+
+        redirect(`/logout?sessionToken=${sessionToken}`)
+      }
     } else {
       throw new HttpError(data)
     }

@@ -24,8 +24,8 @@ const authApi = {
     return http.post<AuthNextServerResponse>('/api/auth', body, { baseUrl: envConfig.NEXT_URL })
   },
 
-  logoutFromNextClientToNextServer: () => {
-    return http.post<MessageResponse>('/api/auth/logout', {}, { baseUrl: envConfig.NEXT_URL })
+  logoutFromNextClientToNextServer: (force?: boolean, signal?: AbortSignal) => {
+    return http.post<MessageResponse>('/api/auth/logout', { force }, { baseUrl: envConfig.NEXT_URL, signal })
   },
 }
 

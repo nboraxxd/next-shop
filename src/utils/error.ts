@@ -9,6 +9,8 @@ export const handleErrorApi = ({ error, setError }: { error: any; setError?: Use
     error.payload.errors.forEach(({ field, message }) => {
       setError(field, { type: 'server', message })
     })
+  } else if (error instanceof DOMException) {
+    console.log('AbortError:', error.message)
   } else {
     if (isClient) {
       toast.error(error.payload?.message || error.toString())

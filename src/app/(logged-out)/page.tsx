@@ -7,7 +7,7 @@ import ButtonLogout from '@/components/shared/button-logout'
 
 export default async function HomePage() {
   const cookieStore = cookies()
-  const sessionToken = cookieStore.get('sessionToken')?.value
+  const sessionToken = cookieStore.get('sessionToken')
 
   return (
     <>
