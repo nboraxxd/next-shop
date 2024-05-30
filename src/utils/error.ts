@@ -15,8 +15,7 @@ export const handleErrorApi = ({ error, setError }: { error: any; setError?: Use
     if (isClient) {
       toast.error(error.payload?.message || error.toString())
     } else {
-      // TODO: Xử lý trường hợp nếu error có status code 401 thì thực hiện logout và redirect về trang login
-      console.error(error)
+      console.log(error)
     }
   }
 }

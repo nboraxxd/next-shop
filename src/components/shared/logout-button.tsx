@@ -2,19 +2,19 @@
 
 import { useRouter } from 'next/navigation'
 
-import { Button } from '@/components/ui/button'
 import authApi from '@/api-requests/auth.api'
-import { handleErrorApi } from '@/utils/error'
+import { Button } from '@/components/ui/button'
 
-export default function ButtonLogout() {
+export default function LogoutButton() {
   const router = useRouter()
 
   const handleLogout = async () => {
     try {
       await authApi.logoutFromNextClientToNextServer()
-      router.refresh()
     } catch (error) {
-      handleErrorApi({ error })
+      await authApi.logoutFromNextClientToNextServer(true)
+    } finally {
+      router.refresh()
     }
   }
 

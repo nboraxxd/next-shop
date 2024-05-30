@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import { cookies } from 'next/headers'
+import { VercelLogoIcon } from '@radix-ui/react-icons'
 
 import { Button } from '@/components/ui/button'
-import { VercelLogoIcon } from '@radix-ui/react-icons'
-import ButtonLogout from '@/components/shared/button-logout'
+import { LogoutButton } from '@/components/shared'
 
 export default async function HomePage() {
   const cookieStore = cookies()
@@ -34,7 +34,7 @@ export default async function HomePage() {
         <Button asChild>
           <Link href="/profile">Profile (client)</Link>
         </Button>
-        <ButtonLogout />
+        <LogoutButton />
       </div>
 
       <div className="flex items-center gap-2">

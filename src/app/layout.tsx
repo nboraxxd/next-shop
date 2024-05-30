@@ -2,9 +2,8 @@ import localFont from 'next/font/local'
 import type { Metadata } from 'next'
 import { cookies } from 'next/headers'
 
-import { ThemeProvider } from '@/components/provider/theme-provider'
-import AuthProvider from '@/components/provider/auth-provider'
-import { Header } from '@/components/shared/header'
+import { AuthProvider, ThemeProvider } from '@/components/provider'
+import { Header, SlideSession } from '@/components/shared'
 import { Toaster } from '@/components/ui/sonner'
 import '@/app/globals.css'
 
@@ -154,6 +153,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AuthProvider initialSessionToken={sessionToken?.value}>
             <Header />
+            <SlideSession />
             {children}
             <Toaster />
           </AuthProvider>
