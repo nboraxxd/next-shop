@@ -15,7 +15,7 @@ export default function ProfilePage() {
 
     ;(async () => {
       try {
-        const result = await accountApi.getMeClient(signal)
+        const result = await accountApi.getMeFromClient(signal)
 
         setProfile(result.payload.data)
       } catch (error) {

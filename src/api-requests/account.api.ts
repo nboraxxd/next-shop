@@ -1,11 +1,14 @@
 import http from '@/lib/http'
-import { GetMeResponse } from '@/types/account.type'
+import { GetMeResponse, UpdateMeReqBody } from '@/types/account.type'
 
 const accountApi = {
+  // API of backend server
   getMe: (sessionToken: string) =>
     http.get<GetMeResponse>('/account/me', { headers: { Authorization: `Bearer ${sessionToken}` } }),
 
-  getMeClient: (signal?: AbortSignal) => http.get<GetMeResponse>('/account/me', { signal }),
+  getMeFromClient: (signal?: AbortSignal) => http.get<GetMeResponse>('/account/me', { signal }),
+
+  updateMeFromClient: (body: UpdateMeReqBody) => http.put<GetMeResponse>('/account/me', body),
 }
 
 export default accountApi

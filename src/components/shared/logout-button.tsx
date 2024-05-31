@@ -3,9 +3,12 @@
 import { useRouter } from 'next/navigation'
 
 import authApi from '@/api-requests/auth.api'
+import { useAuthStore } from '@/lib/stores/auth-store'
 import { Button } from '@/components/ui/button'
 
 export default function LogoutButton() {
+  const setMe = useAuthStore((state) => state.setMe)
+
   const router = useRouter()
 
   const handleLogout = async () => {
@@ -14,6 +17,7 @@ export default function LogoutButton() {
     } catch (error) {
       await authApi.logoutFromNextClientToNextServer(true)
     } finally {
+      setMe(null)
       router.refresh()
     }
   }

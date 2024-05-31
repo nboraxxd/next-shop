@@ -5,10 +5,13 @@ import queryString from 'query-string'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 import authApi from '@/api-requests/auth.api'
-import { clientSessionToken } from '@/lib/http'
 import { handleErrorApi } from '@/utils/error'
+import { clientSessionToken } from '@/lib/http'
+import { useAuthStore } from '@/lib/stores/auth-store'
 
 export default function LogoutPage() {
+  const setMe = useAuthStore((state) => state.setMe)
+
   const router = useRouter()
 
   const pathname = usePathname()
@@ -25,6 +28,8 @@ export default function LogoutPage() {
       try {
         if (sessionToken === clientSessionToken.value) {
           await authApi.logoutFromNextClientToNextServer(true, signal)
+
+          setMe(null)
           router.push(`/login?${from}`)
         }
       } catch (error) {
@@ -35,5 +40,7 @@ export default function LogoutPage() {
     return () => {
       controller.abort()
     }
-  }, [from, router, sessionToken])
+  }, [from, router, sessionToken, setMe])
+
+  return null
 }

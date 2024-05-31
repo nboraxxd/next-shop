@@ -15,12 +15,12 @@ const authApi = {
 
   login: (body: LoginReqBody) => http.post<AuthResponse>('/auth/login', body),
 
-  logoutFromNextServerToServer: (sessionToken: string) => {
-    return http.post<MessageResponse>('/auth/logout', {}, { headers: { Authorization: `Bearer ${sessionToken}` } })
-  },
-
   slideSessionFromNextServerToServer: (sessionToken: string) => {
     return http.post<AuthResponse>('/auth/slide-session', {}, { headers: { Authorization: `Bearer ${sessionToken}` } })
+  },
+
+  logoutFromNextServerToServer: (sessionToken: string) => {
+    return http.post<MessageResponse>('/auth/logout', {}, { headers: { Authorization: `Bearer ${sessionToken}` } })
   },
 
   // API of Next.js server
