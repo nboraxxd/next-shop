@@ -4,7 +4,7 @@ import { cookies } from 'next/headers'
 
 import accountApi from '@/api-requests/account.api'
 import { handleErrorApi } from '@/utils/error'
-import { GetMeResponse } from '@/types/account.type'
+import { MeResponse } from '@/types/account.type'
 import { AuthProvider, ThemeProvider } from '@/components/provider'
 import { Header, SlideSession } from '@/components/shared'
 import { Toaster } from '@/components/ui/sonner'
@@ -150,7 +150,7 @@ export default async function RootLayout({
   const cookieStore = cookies()
   const sessionToken = cookieStore.get('sessionToken')
 
-  let me: GetMeResponse['data'] | null = null
+  let me: MeResponse['data'] | null = null
 
   if (sessionToken) {
     try {

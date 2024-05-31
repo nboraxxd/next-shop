@@ -34,6 +34,8 @@ export default function UpdateMeForm() {
   }, [form, me?.name])
 
   async function onValid(data: UpdateMeSchemaType) {
+    if (status === ServiceStatus.pending) return
+
     try {
       setStatus(ServiceStatus.pending)
       const res = await accountApi.updateMeFromClient(data)

@@ -3,11 +3,11 @@
 import { useEffect, useState } from 'react'
 
 import accountApi from '@/api-requests/account.api'
-import { GetMeResponse } from '@/types/account.type'
+import { MeResponse } from '@/types/account.type'
 import { handleErrorApi } from '@/utils/error'
 
 export default function ProfilePage() {
-  const [profile, setProfile] = useState<GetMeResponse['data'] | null>(null)
+  const [profile, setProfile] = useState<MeResponse['data'] | null>(null)
 
   useEffect(() => {
     const controller = new AbortController()

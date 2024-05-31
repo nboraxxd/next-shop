@@ -1,5 +1,5 @@
 import envConfig from '@/constants/config'
-import { AuthResponse } from '@/types/auth.type'
+import { AuthServerResponse } from '@/types/auth.type'
 import { isClient, addFirstSlashToUrl } from '@/utils'
 import { redirect } from 'next/navigation'
 
@@ -76,12 +76,17 @@ export const clientSessionToken = new SessionToken()
 let clientLogoutRequest: Promise<any> | null = null
 
 const request = async <Response>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', url: string, options?: CustomOptions) => {
-  const body = options?.body ? JSON.stringify(options.body) : undefined
+  const body = options?.body instanceof FormData ? options.body : JSON.stringify(options?.body)
 
-  const baseHeaders: HeadersInit = {
-    'Content-Type': 'application/json',
-    Authorization: clientSessionToken.value ? `Bearer ${clientSessionToken.value}` : '',
-  }
+  const baseHeaders: HeadersInit =
+    options?.body instanceof FormData
+      ? {
+          Authorization: `Bearer ${clientSessionToken.value}`,
+        }
+      : {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${clientSessionToken.value}`,
+        }
 
   const baseUrl = options?.baseUrl || envConfig.API_ENDPOINT
 
@@ -135,8 +140,8 @@ const request = async <Response>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', url:
   }
 
   if (isClient && ['/auth/login', '/auth/register'].some((path) => path === addFirstSlashToUrl(url))) {
-    clientSessionToken.value = (payload as AuthResponse).data.token
-    clientSessionToken.expiresAt = (payload as AuthResponse).data.expiresAt
+    clientSessionToken.value = (payload as AuthServerResponse).data.token
+    clientSessionToken.expiresAt = (payload as AuthServerResponse).data.expiresAt
   } else if (isClient && addFirstSlashToUrl(url) === '/auth/logout') {
     clientSessionToken.value = ''
     clientSessionToken.expiresAt = new Date().toISOString()

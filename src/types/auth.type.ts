@@ -1,4 +1,6 @@
+import { Me } from '@/types/account.type'
 import { LoginSchemaType, RegisterSchemaType } from '@/lib/schemaValidations/auth.schema'
+import { SuccessResponse } from '@/types'
 
 export type RegisterReqBody = RegisterSchemaType
 
@@ -9,17 +11,10 @@ export type AuthNextServerReqBody = {
   expiresAt: string
 }
 
-export type AuthResponse = {
-  data: {
-    token: string
-    expiresAt: string
-    account: {
-      id: number
-      name: string
-      email: string
-    }
-  }
-  message: string
-}
+export type AuthServerResponse = SuccessResponse<{
+  token: string
+  expiresAt: string
+  account: Me
+}>
 
 export type AuthNextServerResponse = AuthNextServerReqBody

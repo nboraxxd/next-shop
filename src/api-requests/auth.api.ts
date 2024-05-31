@@ -1,22 +1,26 @@
 import http from '@/lib/http'
 import envConfig from '@/constants/config'
-import { MessageResponse } from '@/types/common.type'
+import { MessageResponse } from '@/types'
 import {
   AuthNextServerReqBody,
   AuthNextServerResponse,
-  AuthResponse,
+  AuthServerResponse,
   LoginReqBody,
   RegisterReqBody,
 } from '@/types/auth.type'
 
 const authApi = {
   // API of backend server
-  register: (body: RegisterReqBody) => http.post<AuthResponse>('/auth/register', body),
+  register: (body: RegisterReqBody) => http.post<AuthServerResponse>('/auth/register', body),
 
-  login: (body: LoginReqBody) => http.post<AuthResponse>('/auth/login', body),
+  login: (body: LoginReqBody) => http.post<AuthServerResponse>('/auth/login', body),
 
   slideSessionFromNextServerToServer: (sessionToken: string) => {
-    return http.post<AuthResponse>('/auth/slide-session', {}, { headers: { Authorization: `Bearer ${sessionToken}` } })
+    return http.post<AuthServerResponse>(
+      '/auth/slide-session',
+      {},
+      { headers: { Authorization: `Bearer ${sessionToken}` } }
+    )
   },
 
   logoutFromNextServerToServer: (sessionToken: string) => {
@@ -33,7 +37,7 @@ const authApi = {
   },
 
   slideSessionFromNextClientToNextServer: () => {
-    return http.post<AuthResponse>('/api/auth/slide-session', {}, { baseUrl: envConfig.NEXT_URL })
+    return http.post<AuthServerResponse>('/api/auth/slide-session', {}, { baseUrl: envConfig.NEXT_URL })
   },
 }
 

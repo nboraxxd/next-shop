@@ -1,9 +1,9 @@
-import { GetMeResponse } from '@/types/account.type'
+import { MeResponse } from '@/types/account.type'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 
 type AuthStore = {
-  me: GetMeResponse['data'] | null
+  me: MeResponse['data'] | null
   setMe: (user: AuthStore['me']) => void
 }
 

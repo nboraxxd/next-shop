@@ -5,3 +5,8 @@ export type SearchParamsProps = {
 export type MessageResponse = {
   message: string
 }
+
+export type SuccessResponse<D> = {
+  message: string
+  data: D
+}

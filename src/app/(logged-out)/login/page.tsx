@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
+import { SearchParamsProps } from '@/types'
 import LoginForm from '@/components/form/login-form'
-import { SearchParamsProps } from '@/types/common.type'
 
 export default function LoginPage({ searchParams }: SearchParamsProps) {
   return (

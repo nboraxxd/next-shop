@@ -1,12 +1,13 @@
+import { SuccessResponse } from '@/types'
+
+export type Me = {
+  id: number
+  name: string
+  email: string
+}
+
 export type UpdateMeReqBody = {
   name: string
 }
 
-export type GetMeResponse = {
-  data: {
-    id: number
-    name: string
-    email: string
-  }
-  message: string
-}
+export type MeResponse = SuccessResponse<Me>

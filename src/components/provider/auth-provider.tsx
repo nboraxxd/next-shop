@@ -2,14 +2,14 @@
 
 import { useEffect } from 'react'
 
-import { GetMeResponse } from '@/types/account.type'
+import { MeResponse } from '@/types/account.type'
 import { useAuthStore } from '@/lib/stores/auth-store'
 import { clientSessionToken } from '@/lib/http'
 import { isClient } from '@/utils'
 
 interface Props {
   children: React.ReactNode
-  me: GetMeResponse['data'] | null
+  me: MeResponse['data'] | null
   initialSessionToken?: string
 }
 
