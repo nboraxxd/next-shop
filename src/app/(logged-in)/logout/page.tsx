@@ -1,5 +1,6 @@
 'use client'
 
+import { Metadata } from 'next'
 import { useEffect } from 'react'
 import queryString from 'query-string'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
@@ -8,6 +9,11 @@ import authApi from '@/api-requests/auth.api'
 import { handleErrorApi } from '@/utils/error'
 import { clientSessionToken } from '@/lib/http'
 import { useAuthStore } from '@/lib/stores/auth-store'
+
+export const metadata: Metadata = {
+  title: 'Logout',
+  description: 'This is the logout page of the app.',
+}
 
 export default function LogoutPage() {
   const setMe = useAuthStore((state) => state.setMe)

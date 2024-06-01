@@ -1,9 +1,15 @@
 import Link from 'next/link'
+import { Metadata } from 'next'
 import { cookies } from 'next/headers'
 import { VercelLogoIcon } from '@radix-ui/react-icons'
 
 import { Button } from '@/components/ui/button'
 import { LogoutButton } from '@/components/shared'
+
+export const metadata: Metadata = {
+  title: 'Homepage',
+  description: 'This is the homepage of the app.',
+}
 
 export default async function HomePage() {
   const cookieStore = cookies()

@@ -1,9 +1,15 @@
+import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 
 import accountApi from '@/api-requests/account.api'
 import { UpdateMeForm } from '@/components/form'
 import { Heading } from '@/components/shared'
+
+export const metadata: Metadata = {
+  title: 'Update Me',
+  description: 'This is the update me page of the app.',
+}
 
 export default async function UpdateMe() {
   const cookieStore = cookies()

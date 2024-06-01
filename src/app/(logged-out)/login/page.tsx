@@ -1,7 +1,13 @@
 import Link from 'next/link'
+import { Metadata } from 'next'
 
 import { SearchParamsProps } from '@/types'
 import LoginForm from '@/components/form/login-form'
+
+export const metadata: Metadata = {
+  title: 'Login',
+  description: 'This is the login page of the app.',
+}
 
 export default function LoginPage({ searchParams }: SearchParamsProps) {
   return (

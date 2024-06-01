@@ -1,5 +1,12 @@
+import { Metadata } from 'next'
+
 import { ProductForm } from '@/components/form'
 import { Heading } from '@/components/shared'
+
+export const metadata: Metadata = {
+  title: 'Add product',
+  description: 'This is the add product page of the app.',
+}
 
 export default function AddProductPage() {
   return (

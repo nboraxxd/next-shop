@@ -1,10 +1,16 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { Metadata } from 'next'
 import { compareDesc, parseISO } from 'date-fns'
 
 import productApi from '@/api-requests/product.api'
 import { Button } from '@/components/ui/button'
 import { DelProductButton, Heading } from '@/components/shared'
+
+export const metadata: Metadata = {
+  title: 'Products',
+  description: 'This is the products page of the app',
+}
 
 export default async function ProductsPage() {
   const response = await productApi.getProducts()
@@ -29,6 +35,7 @@ export default async function ProductsPage() {
             />
             <div className="flex flex-col gap-6">
               <div className="flex gap-3">
+                <h3>id: {product.id}</h3>
                 <h3>Name: {product.name}</h3>
                 <p>Price: {product.price}</p>
               </div>

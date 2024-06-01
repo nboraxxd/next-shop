@@ -1,7 +1,13 @@
 import Link from 'next/link'
+import { Metadata } from 'next'
 
-import { SearchParamsProps } from '@/types/common.type'
+import { SearchParamsProps } from '@/types'
 import RegisterForm from '@/components/form/register-form'
+
+export const metadata: Metadata = {
+  title: 'Register',
+  description: 'This is the registration page of the app.',
+}
 
 export default function RegisterPage({ searchParams }: SearchParamsProps) {
   return (
