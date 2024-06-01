@@ -45,16 +45,21 @@ export default function ProductForm({ product }: { product?: ProductResponse['da
       const formData = new FormData()
       formData.append('file', file as Blob)
 
-      const uploadImageResponse = await mediaApi.uploadImage(formData)
+      if (product) {
+        const uploadImageResponse = file ? await mediaApi.uploadImage(formData) : undefined
 
-      await productApi.addProductFromClient({ ...values, image: uploadImageResponse.payload.data })
+        await productApi.updateProductFromClient(product.id, {
+          ...values,
+          image: uploadImageResponse?.payload.data || product.image,
+        })
+      } else {
+        const uploadImageResponse = await mediaApi.uploadImage(formData)
+
+        await productApi.addProductFromClient({ ...values, image: uploadImageResponse.payload.data })
+      }
 
       router.push('/products')
       router.refresh()
-
-      form.reset()
-      setFile(null)
-      inputImageRef.current?.value && (inputImageRef.current.value = '')
 
       setStatus(ServiceStatus.successful)
     } catch (error) {
@@ -140,7 +145,7 @@ export default function ProductForm({ product }: { product?: ProductResponse['da
 
         {/* Image preview */}
         {file || image ? (
-          <div>
+          <div className="flex flex-col items-center">
             <Image
               src={file ? URL.createObjectURL(file) : image}
               width={128}
@@ -148,11 +153,13 @@ export default function ProductForm({ product }: { product?: ProductResponse['da
               quality={90}
               alt="preview"
               className="size-32 object-cover"
+              priority={!!product}
             />
             <Button
               type="button"
               variant={'destructive'}
               size={'sm'}
+              className="mt-2 w-fit"
               onClick={() => {
                 setFile(null)
                 form.setValue('image', '')
@@ -167,7 +174,7 @@ export default function ProductForm({ product }: { product?: ProductResponse['da
         ) : null}
 
         {/* Button */}
-        <Button type="submit" disabled={status === ServiceStatus.pending} className="mt-2 w-fit">
+        <Button type="submit" disabled={status === ServiceStatus.pending} className="mt-2">
           {product ? 'Update' : 'Add'}
         </Button>
       </form>
