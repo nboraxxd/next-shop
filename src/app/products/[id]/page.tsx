@@ -2,24 +2,37 @@ import Image from 'next/image'
 import { cache } from 'react'
 import { Metadata } from 'next'
 
+import envConfig from '@/constants/config'
 import productApi from '@/api-requests/product.api'
 import { ParamsProps } from '@/types'
 import { ProductResponse } from '@/types/product.type'
 import { handleErrorApi } from '@/utils/error'
+import { baseOpenGraph } from '@/constants/shared-metadata'
 import { Heading } from '@/components/shared'
 
 const getProduct = cache(productApi.getProduct)
 
 export async function generateMetadata({ params }: ParamsProps): Promise<Metadata> {
-  // read route params
-  const productId = params.id
+  const productResponse = await getProduct(Number(params.id))
 
-  // fetch data
-  const productResponse = await getProduct(Number(productId))
+  const url = `${envConfig.NEXT_URL}/products/${params.id}`
+  const title = productResponse.payload.data.name
+  const description = productResponse.payload.data.description
+  const image = productResponse.payload.data.image
 
   return {
-    title: productResponse.payload.data.name,
-    description: productResponse.payload.data.description,
+    title,
+    description,
+    openGraph: {
+      ...baseOpenGraph,
+      title,
+      description,
+      url,
+      images: [{ url: image, alt: title }],
+    },
+    alternates: {
+      canonical: url,
+    },
   }
 }
 
@@ -41,7 +54,7 @@ export default async function ProductDetailPage({ params: { id: productId } }: P
       {product ? (
         <>
           <Heading>{product.name}</Heading>
-          <div className="flex flex-col items-center">
+          <div className="mt-4 flex flex-col items-center">
             <Image
               src={product.image}
               alt={product.name}

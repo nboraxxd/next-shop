@@ -5,6 +5,7 @@ import { cookies } from 'next/headers'
 import accountApi from '@/api-requests/account.api'
 import { handleErrorApi } from '@/utils/error'
 import { MeResponse } from '@/types/account.type'
+import { baseOpenGraph } from '@/constants/shared-metadata'
 import { AuthProvider, ThemeProvider } from '@/components/provider'
 import { Header, SlideSession } from '@/components/shared'
 import { Toaster } from '@/components/ui/sonner'
@@ -143,6 +144,7 @@ export const metadata: Metadata = {
     default: 'Next shop',
   },
   description: 'This is the main layout of the app.',
+  openGraph: baseOpenGraph,
 }
 
 export default async function RootLayout({
