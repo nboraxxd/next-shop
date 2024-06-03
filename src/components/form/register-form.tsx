@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import queryString from 'query-string'
 import { useForm } from 'react-hook-form'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
@@ -11,11 +11,12 @@ import authApi from '@/api-requests/auth.api'
 import { ServiceStatus } from '@/constants/enum'
 import { handleErrorApi } from '@/utils/error'
 import { RegisterSchema, RegisterSchemaType } from '@/lib/schemaValidations/auth.schema'
+import { AuthFormSkeleton } from '@/components/skeleton'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 
-export default function RegisterForm() {
+function RegisterFormWithoutSuspense() {
   const [status, setStatus] = useState<ServiceStatus>(ServiceStatus.idle)
 
   const router = useRouter()
@@ -119,7 +120,7 @@ export default function RegisterForm() {
           name="confirmPassword"
           render={({ field }) => (
             <FormItem className="space-y-1.5">
-              <FormLabel>Cofirm password</FormLabel>
+              <FormLabel>Confirm password</FormLabel>
               <FormControl>
                 <Input
                   type="password"
@@ -140,5 +141,20 @@ export default function RegisterForm() {
         </Button>
       </form>
     </Form>
+  )
+}
+
+const registerFields = [
+  { label: 'Name', placeholder: 'Bruce Wayne' },
+  { label: 'Email', placeholder: 'bruce@wayne.dc' },
+  { label: 'Password', placeholder: 'Please enter your password' },
+  { label: 'Confirm password', placeholder: 'Please confirm your password' },
+]
+
+export default function RegisterForm() {
+  return (
+    <Suspense fallback={<AuthFormSkeleton itemList={registerFields} buttonLabel="Login" />}>
+      <RegisterFormWithoutSuspense />
+    </Suspense>
   )
 }

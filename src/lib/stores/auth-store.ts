@@ -14,7 +14,7 @@ export const useAuthStore = create<AuthStore>()(
       setMe: (me) => set({ me }),
     }),
     {
-      enabled: true,
+      enabled: process.env.NODE_ENV === 'development',
       name: 'auth-store',
     }
   )

@@ -1,9 +1,6 @@
 import localFont from 'next/font/local'
 import type { Metadata } from 'next'
-import { cookies } from 'next/headers'
 
-import accountApi from '@/api-requests/account.api'
-import { handleErrorApi } from '@/utils/error'
 import { MeResponse } from '@/types/account.type'
 import { baseOpenGraph } from '@/constants/shared-metadata'
 import { AuthProvider, ThemeProvider } from '@/components/provider'
@@ -152,28 +149,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const cookieStore = cookies()
-  const sessionToken = cookieStore.get('sessionToken')
-
-  let me: MeResponse['data'] | null = null
-
-  if (sessionToken) {
-    try {
-      const res = await accountApi.getMe(sessionToken.value)
-
-      if (res.status === 200) {
-        me = res.payload.data
-      }
-    } catch (error) {
-      handleErrorApi({ error })
-    }
-  }
+  const me: MeResponse['data'] | null = null
 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${arimo.className} ${arimo.variable} ${nunito.variable} ${kanit.variable}`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <AuthProvider me={me} initialSessionToken={sessionToken?.value}>
+          <AuthProvider me={me}>
             <Header />
             <SlideSession />
             {children}

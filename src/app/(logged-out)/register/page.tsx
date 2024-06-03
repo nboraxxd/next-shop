@@ -1,15 +1,14 @@
-import Link from 'next/link'
 import { Metadata } from 'next'
 
-import { SearchParamsProps } from '@/types'
-import RegisterForm from '@/components/form/register-form'
+import { RedirectAuthLink } from '@/app/(logged-out)/_components'
+import { RegisterForm } from '@/components/form'
 
 export const metadata: Metadata = {
   title: 'Register',
   description: 'This is the registration page of the app.',
 }
 
-export default function RegisterPage({ searchParams }: SearchParamsProps) {
+export default function RegisterPage() {
   return (
     <>
       <h1 className="flex items-center gap-2 text-2xl font-semibold">Register with Next free</h1>
@@ -20,15 +19,7 @@ export default function RegisterPage({ searchParams }: SearchParamsProps) {
 
         <div className="mt-5 flex items-center justify-center gap-1">
           <span>Already have an account?</span>
-          <Link
-            href={{
-              pathname: '/login',
-              query: searchParams,
-            }}
-            className="text-blue-600 hover:underline"
-          >
-            Login
-          </Link>
+          <RedirectAuthLink redirectPath="/login">Login</RedirectAuthLink>
         </div>
       </div>
     </>

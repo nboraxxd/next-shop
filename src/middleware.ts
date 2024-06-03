@@ -15,7 +15,6 @@ export function middleware(request: NextRequest) {
     (editProductRegex.test(pathname) || loggedInPaths.some((privatePath) => pathname.startsWith(privatePath))) &&
     !sessionToken
   ) {
-    console.log('🔥 ~ middleware ~ pathname:', pathname)
     const loginUrl = new URL('/login', request.url)
     loginUrl.searchParams.set('next', pathname)
 

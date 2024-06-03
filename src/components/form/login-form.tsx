@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import queryString from 'query-string'
 import { useForm } from 'react-hook-form'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
@@ -11,11 +11,12 @@ import authApi from '@/api-requests/auth.api'
 import { ServiceStatus } from '@/constants/enum'
 import { handleErrorApi } from '@/utils/error'
 import { LoginSchemaType, LoginSchema } from '@/lib/schemaValidations/auth.schema'
+import { AuthFormSkeleton } from '@/components/skeleton'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 
-export default function LoginForm() {
+function LoginFormWithoutSuspense() {
   const [status, setStatus] = useState<ServiceStatus>(ServiceStatus.idle)
 
   const router = useRouter()
@@ -103,5 +104,18 @@ export default function LoginForm() {
         </Button>
       </form>
     </Form>
+  )
+}
+
+const loginFields = [
+  { label: 'Email', placeholder: 'bruce@wayne.dc' },
+  { label: 'Password', placeholder: 'Please enter your password' },
+]
+
+export default function LoginForm() {
+  return (
+    <Suspense fallback={<AuthFormSkeleton itemList={loginFields} buttonLabel="Login" />}>
+      <LoginFormWithoutSuspense />
+    </Suspense>
   )
 }

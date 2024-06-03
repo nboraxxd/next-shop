@@ -45,52 +45,24 @@ export class EntityError extends HttpError {
   }
 }
 
-class SessionToken {
-  private token = ''
-  private _expiresAt = new Date().toISOString()
-
-  get value() {
-    return this.token
-  }
-
-  set value(token: string) {
-    if (!isClient) {
-      throw new Error('Cannot set token on server side')
-    }
-    this.token = token
-  }
-
-  get expiresAt() {
-    return this._expiresAt
-  }
-
-  set expiresAt(expiresAt: string) {
-    if (!isClient) {
-      throw new Error('Cannot set expiresAt on server side')
-    }
-    this._expiresAt = expiresAt
-  }
-}
-
-export const clientSessionToken = new SessionToken()
 let clientLogoutRequest: Promise<any> | null = null
 
 const request = async <Response>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', url: string, options?: CustomOptions) => {
   const body = options?.body instanceof FormData ? options.body : JSON.stringify(options?.body)
 
-  const baseHeaders: HeadersInit =
-    options?.body instanceof FormData
-      ? {
-          Authorization: `Bearer ${clientSessionToken.value}`,
-        }
-      : {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${clientSessionToken.value}`,
-        }
+  const baseHeaders: HeadersInit = options?.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }
 
   const baseUrl = options?.baseUrl || envConfig.API_ENDPOINT
 
   const fullUrl = url.startsWith('/') ? `${baseUrl}${url}` : `${baseUrl}/${url}`
+
+  if (isClient) {
+    const sessionToken = localStorage.getItem('sessionToken')
+
+    if (sessionToken) {
+      baseHeaders.Authorization = `Bearer ${sessionToken}`
+    }
+  }
 
   const res = await fetch(fullUrl, {
     ...options,
@@ -120,13 +92,16 @@ const request = async <Response>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', url:
           headers: { ...baseHeaders },
         })
 
-        await clientLogoutRequest
-
-        clientLogoutRequest = null
-        clientSessionToken.value = ''
-        clientSessionToken.expiresAt = new Date().toISOString()
-
-        window.location.href = '/login'
+        try {
+          await clientLogoutRequest
+        } catch (error) {
+          console.log('😰 clientLogoutRequest', error)
+        } finally {
+          localStorage.removeItem('sessionToken')
+          localStorage.removeItem('sessionTokenExpiresAt')
+          clientLogoutRequest = null
+          window.location.href = '/login'
+        }
       }
 
       if (!isClient) {
@@ -140,11 +115,13 @@ const request = async <Response>(method: 'GET' | 'POST' | 'PUT' | 'DELETE', url:
   }
 
   if (isClient && ['/auth/login', '/auth/register'].some((path) => path === addFirstSlashToUrl(url))) {
-    clientSessionToken.value = (payload as AuthServerResponse).data.token
-    clientSessionToken.expiresAt = (payload as AuthServerResponse).data.expiresAt
+    const { token, expiresAt } = (payload as AuthServerResponse).data
+
+    localStorage.setItem('sessionToken', token)
+    localStorage.setItem('sessionTokenExpiresAt', expiresAt)
   } else if (isClient && addFirstSlashToUrl(url) === '/auth/logout') {
-    clientSessionToken.value = ''
-    clientSessionToken.expiresAt = new Date().toISOString()
+    localStorage.removeItem('sessionToken')
+    localStorage.removeItem('sessionTokenExpiresAt')
   }
 
   return data

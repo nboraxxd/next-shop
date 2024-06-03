@@ -1,21 +1,15 @@
 'use client'
 
-import { Metadata } from 'next'
-import { useEffect } from 'react'
+import { toast } from 'sonner'
 import queryString from 'query-string'
+import { Suspense, useEffect } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 import authApi from '@/api-requests/auth.api'
 import { handleErrorApi } from '@/utils/error'
-import { clientSessionToken } from '@/lib/http'
 import { useAuthStore } from '@/lib/stores/auth-store'
 
-export const metadata: Metadata = {
-  title: 'Logout',
-  description: 'This is the logout page of the app.',
-}
-
-export default function LogoutPage() {
+function LogoutLogic() {
   const setMe = useAuthStore((state) => state.setMe)
 
   const router = useRouter()
@@ -30,18 +24,21 @@ export default function LogoutPage() {
     const controller = new AbortController()
     const signal = controller.signal
 
-    ;(async () => {
-      try {
-        if (sessionToken === clientSessionToken.value) {
+    if (sessionToken === localStorage.getItem('sessionToken')) {
+      ;(async () => {
+        try {
           await authApi.logoutFromNextClientToNextServer(true, signal)
 
           setMe(null)
           router.push(`/login?${from}`)
+        } catch (error) {
+          handleErrorApi({ error })
         }
-      } catch (error) {
-        handleErrorApi({ error })
-      }
-    })()
+      })()
+    } else {
+      toast.warning('Invalid session token')
+      router.push(`/`)
+    }
 
     return () => {
       controller.abort()
@@ -49,4 +46,12 @@ export default function LogoutPage() {
   }, [from, router, sessionToken, setMe])
 
   return null
+}
+
+export default function LogoutPage() {
+  return (
+    <Suspense>
+      <LogoutLogic />
+    </Suspense>
+  )
 }

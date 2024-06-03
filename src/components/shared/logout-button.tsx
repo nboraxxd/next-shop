@@ -18,6 +18,8 @@ export default function LogoutButton() {
       await authApi.logoutFromNextClientToNextServer(true)
     } finally {
       setMe(null)
+      localStorage.removeItem('sessionToken')
+      localStorage.removeItem('sessionTokenExpiresAt')
       router.refresh()
     }
   }
